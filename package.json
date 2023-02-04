@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-record-webcam": "^0.0.18",
+    "react-webcam": "^7.0.1"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.14",
