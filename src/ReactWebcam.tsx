@@ -36,13 +36,13 @@ export const ReactWebcam = () => {
   const handleDownload = useCallback(() => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, {
-        type: "video/webm"
+        type: "video/x-matroska;codecs=avc1,opus"
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       document.body.appendChild(a);
       a.href = url;
-      a.download = "react-webcam-stream-capture.webm";
+      a.download = "react-webcam-stream-capture.mp4";
       a.click();
       window.URL.revokeObjectURL(url);
       setRecordedChunks([]);
