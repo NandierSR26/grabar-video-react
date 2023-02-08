@@ -43,6 +43,10 @@ export const ReactWebcamTest2 = () => {
             return;
         }
 
+        if (chunks.current.length === 0) {
+            return;
+        }
+
         const blob = new Blob(chunks.current, {
             type: 'video/x-matroska;codecs=avc1,opus'
         })
