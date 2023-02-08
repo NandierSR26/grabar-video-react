@@ -36,7 +36,7 @@ export const ReactWebcam = () => {
   const handleDownload = useCallback(() => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, {
-        type: "video/x-matroska;codecs=avc1,opus"
+        type: "video/mp4"
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
