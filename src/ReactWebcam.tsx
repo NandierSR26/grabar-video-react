@@ -20,7 +20,7 @@ export const ReactWebcam = () => {
   }, [webcamRef, setCapturing, mediaRecorderRef]);
 
   const handleDataAvailable = useCallback(
-    ({data}) => {
+    ({data}: any) => {
       if (data.size > 0) {
         setRecordedChunks((prev) => prev.concat(data));
       }
@@ -41,7 +41,6 @@ export const ReactWebcam = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       document.body.appendChild(a);
-      a.style = "display: none";
       a.href = url;
       a.download = "react-webcam-stream-capture.webm";
       a.click();
