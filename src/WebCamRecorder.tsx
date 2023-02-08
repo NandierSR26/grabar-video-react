@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import './App.css'
 
 function WebCamRecorder() {
     const [isRecording, setIsRecording] = useState(false);
@@ -125,7 +126,7 @@ function WebCamRecorder() {
     }
 
     return (
-        <div>
+        <div className="container">
             <div>
                 <select id="videoSource" name="videoSource" value={videoSource} onChange={() => handleChange()}>
                     {videoSourceOptions.map((option) => (
@@ -145,7 +146,7 @@ function WebCamRecorder() {
                 </select>
             </div>
             <div>
-                <video ref={videoRef} autoPlay muted playsInline></video>
+                <video ref={videoRef} autoPlay muted playsInline className="camera"></video>
             </div>
             <div>
                 {downloadLink && <video src={downloadLink} controls></video>}
