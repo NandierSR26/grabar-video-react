@@ -20,9 +20,9 @@ export const ReactWebcam = () => {
   }, [webcamRef, setCapturing, mediaRecorderRef]);
 
   const handleDataAvailable = useCallback(
-    (e:BlobEvent) => {
-      if (e.data.size > 0) {
-        setRecordedChunks((prev) => prev.concat(e.data));
+    ({data}) => {
+      if (data.size > 0) {
+        setRecordedChunks((prev) => prev.concat(data));
       }
     },
     [setRecordedChunks]
