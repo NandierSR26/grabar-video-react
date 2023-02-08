@@ -68,11 +68,11 @@ function WebCamRecorder() {
 
             async function getStream() {
                 if (streamRef.current) {
-                    streamRef.current.getTracks().forEach(track => {
+                    streamRef.current.getTracks().forEach((track) => {
                         track.stop();
                     });
                 }
-                const constraints: MediaStreamConstraints = {
+                const constraints = {
                     audio: {
                         deviceId: audioSource !== "" ? { exact: audioSource } : undefined,
                     },
@@ -80,13 +80,11 @@ function WebCamRecorder() {
                         deviceId: videoSource !== "" ? { exact: videoSource } : undefined,
                     },
                 };
-
                 try {
-                    const stream = await window.navigator.mediaDevices.getUserMedia(constraints);
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
                     gotStream(stream);
                 } catch (error: any) {
                     setError(error);
-                    console.log(error);
                 }
             }
 
@@ -120,15 +118,10 @@ function WebCamRecorder() {
         }
         prepareStream();
     }, []);
-
-    const handleChange = () => {
-
-    }
-
     return (
         <div className="container">
             <div>
-                <select id="videoSource" name="videoSource" value={videoSource} onChange={() => handleChange()}>
+                <select id="videoSource" name="videoSource" value={videoSource}>
                     {videoSourceOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}

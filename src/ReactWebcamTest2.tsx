@@ -27,7 +27,6 @@ export const ReactWebcamTest2 = () => {
         };
         mediaRecorderRef.current.start();
     }
-    console.log(chunks.current.length);
     
 
     function stopRecording() {

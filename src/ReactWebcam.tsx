@@ -1,49 +1,66 @@
-import Webcam from 'react-webcam'
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
+import Webcam from 'react-webcam';
 
 export const ReactWebcam = () => {
+  const webcamRef = useRef<any>();
+  const mediaRecorderRef = useRef<null | MediaRecorder>();
+  const [capturing, setCapturing] = useState(false);
+  const [recordedChunks, setRecordedChunks] = useState([]);
 
-  const webcamRef = useRef<Webcam>(null);
-  const [recording, setRecording] = useState(false);
-  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
-  const [downloadLink, setDownloadLink] = useState('')
+  const handleStartCaptureClick = useCallback(() => {
+    setCapturing(true);
+    mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+      mimeType: "video/webm"
+    });
+    mediaRecorderRef.current.addEventListener(
+      "dataavailable",
+      handleDataAvailable
+    );
+    mediaRecorderRef.current.start();
+  }, [webcamRef, setCapturing, mediaRecorderRef]);
 
-  const startRecording = () => {
-    setRecording(true);
-    const stream = webcamRef.current!.stream;
-    if (stream) {
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.start();
+  const handleDataAvailable = useCallback(
+    (e:BlobEvent) => {
+      if (e.data.size > 0) {
+        setRecordedChunks((prev) => prev.concat(e.data));
+      }
+    },
+    [setRecordedChunks]
+  );
 
-      mediaRecorder.addEventListener("dataavailable", (event: BlobEvent) => {
-        setRecordedChunks(prevChunks => [...prevChunks, event.data]);
+  const handleStopCaptureClick = useCallback(() => {
+    mediaRecorderRef.current?.stop();
+    setCapturing(false);
+  }, [mediaRecorderRef, webcamRef, setCapturing]);
+
+  const handleDownload = useCallback(() => {
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, {
+        type: "video/webm"
       });
-
-      mediaRecorder.addEventListener("stop", () => {
-        setRecording(false);
-        const recordedBlob = new Blob(recordedChunks, {
-          type: "video/webm"
-        });
-        setDownloadLink(URL.createObjectURL(recordedBlob))
-        console.log(downloadLink);
-        
-      });
-
-      return () => {
-        mediaRecorder.stop();
-      };
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = url;
+      a.download = "react-webcam-stream-capture.webm";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      setRecordedChunks([]);
     }
-  };
+  }, [recordedChunks]);
 
   return (
     <>
-      <Webcam
-        ref={webcamRef}
-        audio={true}
-        height={500}
-        width={500}
-      />
-      <button onClick={startRecording}>{recording ? "Stop" : "Start"} Recording</button>
+      <Webcam audio={true} ref={webcamRef} />
+      {capturing ? (
+        <button onClick={handleStopCaptureClick}>Stop Capture</button>
+      ) : (
+        <button onClick={handleStartCaptureClick}>Start Capture</button>
+      )}
+      {recordedChunks.length > 0 && (
+        <button onClick={handleDownload}>Download</button>
+      )}
     </>
   );
-}
+};
